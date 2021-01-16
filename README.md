@@ -3,7 +3,7 @@ A python application that gives the user a menu where he or she can search files
 
 
 
-SKILLS COVERED
+## SKILLS COVERED
 For Python students, this application is simple enough to follow but covers a decent number of data structures and could be a good reference for a beginner to Python to see how and when to use different data structures.  It also imports and uses Python libraries.
 Some of the topics covered are:
 
