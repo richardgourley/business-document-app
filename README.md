@@ -15,7 +15,8 @@ Some of the topics covered are:
 - Map - uses 
 - Join
 - Split
-- Combines map, join and split into one line of code within a for loop
+- Lambda
+- Combines map,lambda, join and split examples in one line of code within a for loop
 - Lists
 - Tuples
 - Dictionaries
