@@ -7,3 +7,8 @@ import docx
 from docx.shared import Pt
 import openpyxl
 import datetime
+
+print('Hello, what is your name?')
+name = input()
+print('Hello ' + name + '!!!') 
+print('Choose an option from the menu below:')
