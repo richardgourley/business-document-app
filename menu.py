@@ -8,7 +8,19 @@ from docx.shared import Pt
 import openpyxl
 import datetime
 
-print('Hello, what is your name?')
-name = input()
-print('Hello ' + name + '!!!') 
-print('Choose an option from the menu below:')
+main_menu = MainMenu()
+print("LINE 14: CURRENT DIR IS: ", os.getcwd())
+
+if main_menu.choice == "1":
+    #search_spreadsheet = SearchSpreadsheet(spreadsheet_file, search_term)
+    print("option is 1")
+
+if main_menu.choice == "2":
+    #count_column_instances = CountColumnInstances(spreadsheet_file, column_letter)
+    print("option is 2")
+
+if main_menu.choice == "3":
+    #create_certificates = CreateCertificates(sheet, datetime.datetime.now())
+    print("option is 3")
+
+quit()
