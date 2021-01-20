@@ -11,9 +11,13 @@ class SearchSpreadsheet:
 
     # Returns a data type of results and result information
     def print_search_results(self):
+    	# count will display how many results we find
         count = 0
+        # we assigned 'self.search_term' in 'choose_search_term()'
         search_term_lower = self.search_term.lower()
         for row in list(self.sheet.rows):
+        	# loop through each cell, if search_term matches cell value - ..
+        	# .. convert tuple to string + print and stop comparing (break)
             for cell in row:
                 if search_term_lower in str(cell.value).lower():
                     count += 1
