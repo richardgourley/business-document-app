@@ -1,0 +1,15 @@
+/**** Excel example *****/
+FIRST NAME	SURNAME	START DATE	DEPARTMENT
+Dave 	Smith	8-4-2005	Production
+Barry	Jones	9-4-2005	Marketing
+Sally	Harper	18-1-2009	Sales
+Shane	Thomas	25-4-2004	Sales
+Jack	Jackson	8-4-2005	Director
+Jill	Huttenharg	12-1-2016	Marketing
+Paula	Phillips	13-5-2018	HR
+Sandeep	Patel	14-4-2012	Sales
+Paula	Vox	5-5-2013	Marketing
+Fiona	Redley	8-9-2019	HR
+Bob	Corby	22-4-2013	Marketing
+Hazel	Corkson	9-9-2002	Marketing
+Steven	MacDonald	29-3-2018	Business Development
