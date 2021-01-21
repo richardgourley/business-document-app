@@ -8,6 +8,8 @@ This is an written purely in Python which gives the user a menu, where he or she
    - Replaces 'name', 'duration' and 'date' with the excel info for each student.
    - Saves a new Word document with the name of the student in the file name. 
 
+Files ending '.txt' are included in the 'wordfiles' and 'excelfiles' directory as examples of the excel and word files used when making the application.
+
 It utilizes os, openpyxl and docx.
 
 ## SKILLS COVERED
