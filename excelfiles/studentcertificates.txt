@@ -1,0 +1,15 @@
+/**** Excel example *****/
+FIRST NAME	LAST NAME	DURATION	START DATE
+Dave	Smith	2	11/04/20
+Barry	Jones	4	03/02/20
+Sally	Harper	4	15/02/2020
+Shane	Thomas	5	21/02/2020
+Jack	Jackson	10	04/03/20
+Jill	Huttenharg	12	13/03/2020
+Paula	Phillips	3	25/03/2020
+Sandeep	Patel	4	15/04/2020
+Paula	Vox	5	21/04/2020
+Fiona	Redley	1	16/05/2020
+Bob	Corby	4	25/05/2020
+Hazel	Corkson	3	14/06/2020
+Steven	MacDonald	7	19/06/2020
