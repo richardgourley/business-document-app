@@ -41,14 +41,15 @@ class CreateCertificates:
         self.sheet = student_certificates_excel.active
 
     def test_number_columns(self):
-        if (self.sheet.max_column) != 3:
-            print("The 'studentcertificates.xlsx' file should have 3 columns - First Name, Last Name and Duration - please check the file.")
+        if (self.sheet.max_column) != 4:
+            print("The 'studentcertificates.xlsx' file should have 4 columns - First Name, Last Name, Duration and Start Date - please check the file.")
             quit()
 
     def test_column_names(self):
         col_a1 = self.sheet['A1'].value
         col_b1 = self.sheet['B1'].value
         col_c1 = self.sheet['C1'].value
+        col_d1 = self.sheet['D1'].value
 
         if col_a1.lower() != 'first name':
             print("Sorry, column A1 should be named FIRST NAME. Please check the 'studentcertificates.xlsx' file.")
@@ -62,6 +63,10 @@ class CreateCertificates:
             print("Sorry, column C1 should be named DURATION. Please check the 'studentcertificates.xlsx' file.")
             quit()
 
+        if col_d1.lower() != 'start date':
+            print("Sorry, column D1 should be named START DATE. Please check the 'studentcertificates.xlsx' file.")
+            quit()
+
     def print_certificates(self):
         print("CREATING CERTIFICATES")
 
@@ -72,6 +77,7 @@ class CreateCertificates:
             last_name = str(self.sheet['B' + str(i)].value)
             name = first_name + " " + last_name
             duration = str(self.sheet['C' + str(i)].value)
+            start_date = str(self.sheet['D' + str(i)].value)
 
             # Open the original certificate doc every time
             certificate_doc = docx.Document("certificate.docx")
