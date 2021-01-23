@@ -8,6 +8,8 @@ name
 
 Successfully completed a duration week Spanish course at a Language School
 
-Completion Date: date
+Start Date: start date
+
+Today’s Date: date
 
 Signed: Director
