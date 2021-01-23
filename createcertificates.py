@@ -1,5 +1,6 @@
 import os
 import openpyxl
+from openpyxl.utils import get_column_letter
 import docx
 import datetime
 
@@ -8,9 +9,12 @@ class CreateCertificates:
         self.today = self.get_date_with_ordinal(datetime.datetime.now())
         self.intro()
         self.check_files_exist()
+        self.rows = self.create_dictionary_for_each_row()
+        '''
         self.test_number_columns()
         self.test_column_names()
         self.print_certificates()
+        '''
 
     def intro(self):
         print("To proceed we need to find:")
@@ -39,33 +43,30 @@ class CreateCertificates:
         
         # If 'studentcertificates.xlsx' opens ok, assign self.sheet to be used in print_certificates
         self.sheet = student_certificates_excel.active
+    
+    '''
+    Returns a list of dictionaries
+    Each dictionary represents a row with {column title: row value}
+    '''
+    def create_dictionary_for_each_row(self):
+        # Get column titles in a list
+        column_titles = []
+        for i in range(1, self.sheet.max_column + 1):
+            column_titles.append(self.sheet[get_column_letter(i) + "1"].value)
 
-    def test_number_columns(self):
-        if (self.sheet.max_column) != 4:
-            print("The 'studentcertificates.xlsx' file should have 4 columns - First Name, Last Name, Duration and Start Date - please check the file.")
-            quit()
+        # List to contain each row dictionary
+        row_dictionaries = []
+        for i in range(2, self.sheet.max_row + 1):
+            row_as_dictionary = {}
 
-    def test_column_names(self):
-        col_a1 = self.sheet['A1'].value
-        col_b1 = self.sheet['B1'].value
-        col_c1 = self.sheet['C1'].value
-        col_d1 = self.sheet['D1'].value
+            for y in range(1, self.sheet.max_column + 1):
+                # add column_titles[y-1] as dictionary key
+                row_as_dictionary[column_titles[y-1]] = self.sheet[get_column_letter(y) +  str(i)].value
 
-        if col_a1.lower() != 'first name':
-            print("Sorry, column A1 should be named FIRST NAME. Please check the 'studentcertificates.xlsx' file.")
-            quit()
+            # add row_as_dictionary to row_dictionaries
+            row_dictionaries.append(row_as_dictionary)
 
-        if (col_b1.lower() != 'last name') and (col_b1.lower() != 'surname'):
-            print("Sorry, column B1 should be named LAST NAME or SURNAME. Please check the 'studentcertificates.xlsx' file.")
-            quit()
-
-        if col_c1.lower() != 'duration':
-            print("Sorry, column C1 should be named DURATION. Please check the 'studentcertificates.xlsx' file.")
-            quit()
-
-        if col_d1.lower() != 'start date':
-            print("Sorry, column D1 should be named START DATE. Please check the 'studentcertificates.xlsx' file.")
-            quit()
+        return row_dictionaries
 
     def print_certificates(self):
         print("CREATING CERTIFICATES")
