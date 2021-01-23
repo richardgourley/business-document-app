@@ -5,7 +5,7 @@ import datetime
 
 class CreateCertificates:
     def __init__(self):
-        self.today = self.get_todays_date_with_ordinal(datetime.datetime.now())
+        self.today = self.get_date_with_ordinal(datetime.datetime.now())
         self.intro()
         self.check_files_exist()
         self.test_number_columns()
@@ -120,6 +120,6 @@ class CreateCertificates:
         date_list[1] = self.return_ordinal(date_list[1])
         return " ".join(date_list)
 
-    def get_todays_date_with_ordinal(self, date):
+    def get_date_with_ordinal(self, date):
         todays_date = str(date.strftime('%B %d %Y'))
         return self.convert_date_to_month_ordinal_year(todays_date)
