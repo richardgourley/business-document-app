@@ -10,6 +10,8 @@ class CreateCertificates:
         self.intro()
         self.check_files_exist()
         self.rows = self.create_dictionary_for_each_row()
+        for row in self.rows:
+            print(row.keys())
         '''
         self.test_number_columns()
         self.test_column_names()
@@ -72,6 +74,9 @@ class CreateCertificates:
         print("CREATING CERTIFICATES")
 
         os.chdir('../wordfiles')
+
+        for row in self.rows:
+            print(row.keys)
         
         for i in range(2, self.sheet.max_row + 1):
             first_name = str(self.sheet['A' + str(i)].value)
