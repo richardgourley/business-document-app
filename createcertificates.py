@@ -10,6 +10,9 @@ class CreateCertificates:
         self.intro()
         self.check_files_exist()
         self.rows = self.create_dictionary_for_each_row()
+        if len(self.rows) < 2:
+            print("Sorry, there aren't any data rows in the database")
+            quit()
         self.print_certificates()
 
     def intro(self):
@@ -70,9 +73,13 @@ class CreateCertificates:
         os.chdir('../wordfiles')
 
         for row in self.rows:
+            # Create a string to be WORD DOC FILE NAME after replacing certificate text
+            file_name = str(list(row.values())[0])
+
             # Open the original certificate doc for every row
             certificate_doc = docx.Document("certificate.docx")
-
+            
+            # Loop paragraphs
             for para in certificate_doc.paragraphs:
                 if para.text == "":
                         continue
@@ -90,9 +97,9 @@ class CreateCertificates:
                 # Re-apply existing font size and bold settting
                 para.runs[0].font.size = para_font_size
                 para.runs[0].bold = para_bold
-                print(para.text)
                 
-            certificate_doc.save( + "_certificate.docx")
+            # Save word doc for each excel row with name
+            certificate_doc.save(file_name + str(self.today) +  "_certificate.docx")
 
         print("DONE!")
         print("You can find your certificates for each student created in the 'wordfiles' folder.")
