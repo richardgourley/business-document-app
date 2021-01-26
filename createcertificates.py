@@ -10,23 +10,7 @@ class CreateCertificates:
         self.intro()
         self.check_files_exist()
         self.rows = self.create_dictionary_for_each_row()
-        print("ROWS = ")
-        print(self.rows)
-        print("KEYS = ")
-        try:
-            keys = self.rows[0].keys()
-        except:
-            print("There are no rows in the spreadsheet.")
-
-        print(keys)
-        for key in keys:
-            print(key.lower())
-            for
-        '''
-        self.test_number_columns()
-        self.test_column_names()
         self.print_certificates()
-        '''
 
     def intro(self):
         print("To proceed we need to find:")
@@ -85,34 +69,30 @@ class CreateCertificates:
 
         os.chdir('../wordfiles')
 
-        for row in rows:
-            for key in row.keys():
-                text = text.replace(key.lower(), str(row[key]))
-                print(text)
-        
-        for i in range(2, self.sheet.max_row + 1):
-            first_name = str(self.sheet['A' + str(i)].value)
-            last_name = str(self.sheet['B' + str(i)].value)
-            name = first_name + " " + last_name
-            duration = str(self.sheet['C' + str(i)].value)
-            start_date = str(self.sheet['D' + str(i)].value)
-
-            # Open the original certificate doc every time
+        for row in self.rows:
+            # Open the original certificate doc for every row
             certificate_doc = docx.Document("certificate.docx")
+
             for para in certificate_doc.paragraphs:
                 if para.text == "":
-                    continue
-                # Get existing font size and bold setting
+                        continue
+
+                # Get current font settings for paragraph
                 para_font_size = para.runs[0].font.size
                 para_bold = para.runs[0].bold
-                para.text = para.text.replace("name", name)
-                para.text = para.text.replace("duration", duration)
-                para.text = para.text.replace("date", self.today)
-                # Apply existing font size and bold settting
+
+                for key in row.keys():
+                    para.text = para.text.replace(key.lower(), str(row[key]))
+
+                # ADD todays date
+                para.text = para.text.replace("date", str(self.today))
+
+                # Re-apply existing font size and bold settting
                 para.runs[0].font.size = para_font_size
                 para.runs[0].bold = para_bold
-                # save with students name
-            certificate_doc.save(first_name + "_" + last_name + "_certificate.docx")
+                print(para.text)
+                
+            certificate_doc.save( + "_certificate.docx")
 
         print("DONE!")
         print("You can find your certificates for each student created in the 'wordfiles' folder.")
