@@ -10,8 +10,18 @@ class CreateCertificates:
         self.intro()
         self.check_files_exist()
         self.rows = self.create_dictionary_for_each_row()
-        for row in self.rows:
-            print(row.keys())
+        print("ROWS = ")
+        print(self.rows)
+        print("KEYS = ")
+        try:
+            keys = self.rows[0].keys()
+        except:
+            print("There are no rows in the spreadsheet.")
+
+        print(keys)
+        for key in keys:
+            print(key.lower())
+            for
         '''
         self.test_number_columns()
         self.test_column_names()
@@ -75,9 +85,17 @@ class CreateCertificates:
 
         os.chdir('../wordfiles')
 
-        for row in self.rows:
+        for row in rows:
             for key in row.keys():
-                print(key)
+                text = text.replace(key.lower(), str(row[key]))
+                print(text)
+        
+        for i in range(2, self.sheet.max_row + 1):
+            first_name = str(self.sheet['A' + str(i)].value)
+            last_name = str(self.sheet['B' + str(i)].value)
+            name = first_name + " " + last_name
+            duration = str(self.sheet['C' + str(i)].value)
+            start_date = str(self.sheet['D' + str(i)].value)
 
             # Open the original certificate doc every time
             certificate_doc = docx.Document("certificate.docx")
