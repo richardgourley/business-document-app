@@ -18,6 +18,7 @@ class CreateCertificates:
         print("The 'studentcertificates.xlsx' file in the folder 'excelfiles'")
         print("...AND the 'cerfificate.docx' file in the 'wordfiles' folder.")
         print("===Checking folders===")
+        print("NOTE: The words you want to replace in the certificate file must match the title columns in the spreadsheet.")
 
     def check_files_exist(self):
         os.chdir('excelfiles')
@@ -41,39 +42,53 @@ class CreateCertificates:
         # If 'studentcertificates.xlsx' opens ok, assign self.sheet to be used in print_certificates
         self.sheet = student_certificates_excel.active
 
+    def check_number_rows(self):
+        if len(self.sheet.max_row) < 2:
+            print("Sorry, there aren't any data rows in the database")
+            quit()
+
+    '''
+    Returns a list of row titles, used for replacing text in the certificate document file
+    '''
+    def get_row_titles():
+        row_titles = []
+        for y in range(1, self.sheet.max_column + 1):
+            row_titles.append(self.sheet[get_column_letter(y) + "1"].value)
+
+        return row_titles
+    
     def print_certificates(self):
         print("CREATING CERTIFICATES")
 
         os.chdir('../wordfiles')
+        row_titles = self.get_row_titles()
 
-        for row in self.rows:
-            # Create a string to be WORD DOC FILE NAME after replacing certificate text
-            file_name = str(list(row.values())[0])
+        for i in range(1, self.sheet.max_row + 1):
+            certificate_doc = docx.Document('certificate.docx')
 
-            # Open the original certificate doc for every row
-            certificate_doc = docx.Document("certificate.docx")
-            
-            # Loop paragraphs
             for para in certificate_doc.paragraphs:
-                if para.text == "":
-                        continue
+            if para.text == "":
+                continue
 
-                # Get current font settings for paragraph
-                para_font_size = para.runs[0].font.size
-                para_bold = para.runs[0].bold
+            # Get current font settings for paragraph
+            para_font_size = para.runs[0].font.size
+            para_bold = para.runs[0].bold
 
-                for key in row.keys():
-                    para.text = para.text.replace(key.lower(), str(row[key]))
+            for y in range(1, self.sheet.max_column + 1):
+                para.text = para.text.replace(
+                    str(row_titles[y-1].lower()), 
+                    str(self.sheet[get_column_letter(y) + str(i)].value)
+                )
 
-                # ADD todays date
-                para.text = para.text.replace("date", str(self.today))
+            # ADD todays date
+            para.text = para.text.replace("date", str(self.today))
 
-                # Re-apply existing font size and bold settting
-                para.runs[0].font.size = para_font_size
-                para.runs[0].bold = para_bold
-                
-            # Save word doc for each excel row with name
-            certificate_doc.save(file_name + str(self.today) +  "_certificate.docx")
+            # Re-apply existing font size and bold settting
+            para.runs[0].font.size = para_font_size
+            para.runs[0].bold = para_bold
+                    
+        # Save word doc for each excel row with name
+        certificate_doc.save(str(self.sheet["A" + str(i)].value) + str(self.today) + "_certificate.docx")
 
         print("DONE!")
         print("You can find your certificates for each student created in the 'wordfiles' folder.")
