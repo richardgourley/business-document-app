@@ -42,30 +42,6 @@ class CreateCertificates:
         
         # If 'studentcertificates.xlsx' opens ok, assign self.sheet to be used in print_certificates
         self.sheet = student_certificates_excel.active
-    
-    '''
-    Returns a list of dictionaries
-    Each dictionary represents a row with {column title: row value}
-    '''
-    def create_dictionary_for_each_row(self):
-        # Get column titles in a list
-        column_titles = []
-        for i in range(1, self.sheet.max_column + 1):
-            column_titles.append(self.sheet[get_column_letter(i) + "1"].value)
-
-        # List to contain each row dictionary
-        row_dictionaries = []
-        for i in range(2, self.sheet.max_row + 1):
-            row_as_dictionary = {}
-
-            for y in range(1, self.sheet.max_column + 1):
-                # add column_titles[y-1] as dictionary key
-                row_as_dictionary[column_titles[y-1]] = self.sheet[get_column_letter(y) +  str(i)].value
-
-            # add row_as_dictionary to row_dictionaries
-            row_dictionaries.append(row_as_dictionary)
-
-        return row_dictionaries
 
     def print_certificates(self):
         print("CREATING CERTIFICATES")
