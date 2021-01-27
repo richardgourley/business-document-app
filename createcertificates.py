@@ -48,7 +48,8 @@ class CreateCertificates:
             quit()
 
     '''
-    Returns a list of row titles, used for replacing text in the certificate document file
+    Returns a list of row titles
+    Used in print_certificates() 
     '''
     def get_row_titles(self):
         row_titles = []
