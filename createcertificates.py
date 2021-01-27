@@ -9,10 +9,8 @@ class CreateCertificates:
         self.today = self.get_date_with_ordinal(datetime.datetime.now())
         self.intro()
         self.check_files_exist()
-        self.rows = self.create_dictionary_for_each_row()
-        if len(self.rows) < 2:
-            print("Sorry, there aren't any data rows in the database")
-            quit()
+        self.check_number_rows()
+        # Methods above will advise user of error messages.
         self.print_certificates()
 
     def intro(self):
