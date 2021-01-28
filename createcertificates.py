@@ -6,7 +6,6 @@ import datetime
 
 class CreateCertificates:
     def __init__(self):
-        self.today = self.get_date_with_ordinal(datetime.datetime.now())
         self.intro()
         self.check_files_exist()
         self.check_number_rows()
@@ -82,7 +81,7 @@ class CreateCertificates:
                     )
 
                 # ADD todays date
-                para.text = para.text.replace("date", str(self.today))
+                para.text = para.text.replace("date", str(self.get_date_with_ordinal(datetime.datetime.now())))
 
                 # Re-apply existing font size and bold settting
                 para.runs[0].font.size = para_font_size
@@ -118,3 +117,17 @@ class CreateCertificates:
     def get_date_with_ordinal(self, date):
         todays_date = str(date.strftime('%B %d %Y'))
         return self.convert_date_to_month_ordinal_year(todays_date)
+
+    '''
+    Checks the cell value is a date in d/y/m format.
+    If yes, converts to format month + ordinal + year eg. '26th January 2001'
+    '''
+    def convert_any_dates_to_month_ordinal_year(self, string):
+        try:
+            date = datetime.strptime(string, "%d/%M/%Y")
+            date_string = "{} {} {}".format(str(date.strftime('%B')), str(date.day), str(date.year))
+            return date_string
+
+        except:
+            return string
+
