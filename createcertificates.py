@@ -108,16 +108,6 @@ class CreateCertificates:
             return str(day) + "rd"
         return str(day) + "th"
 
-    def convert_date_to_month_ordinal_year(self,date):
-        date_list = date.split(" ")
-        # change day to ordinal eg 3 -> 3rd, 21 -> 21st
-        date_list[1] = self.return_ordinal(date_list[1])
-        return " ".join(date_list)
-
-    def get_date_with_ordinal(self, date):
-        todays_date = str(date.strftime('%B %d %Y'))
-        return self.convert_date_to_month_ordinal_year(todays_date)
-
     '''
     @ returns a string - either formatted date or original cell
     Block 1 tests cell is DATETIME type
