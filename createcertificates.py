@@ -63,7 +63,8 @@ class CreateCertificates:
         os.chdir('../wordfiles')
         row_titles = self.get_row_titles()
 
-        for i in range(1, self.sheet.max_row + 1):
+        #### START ROW LOOP AT ROW 2 HENCE RANGE(2...) ####
+        for i in range(2, self.sheet.max_row + 1):
             certificate_doc = docx.Document('certificate.docx')
 
             for para in certificate_doc.paragraphs:
