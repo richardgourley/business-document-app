@@ -2,7 +2,7 @@ import os
 import openpyxl
 from openpyxl.utils import get_column_letter
 import docx
-import datetime
+from datetime import datetime
 
 class CreateCertificates:
     def __init__(self):
@@ -81,7 +81,7 @@ class CreateCertificates:
                     )
 
                 # ADD todays date
-                para.text = para.text.replace("date", str(self.get_date_with_ordinal(datetime.datetime.now())))
+                para.text = para.text.replace("date", str(self.convert_any_dates_to_month_ordinal_year(datetime.now())))
 
                 # Re-apply existing font size and bold settting
                 para.runs[0].font.size = para_font_size
@@ -119,15 +119,34 @@ class CreateCertificates:
         return self.convert_date_to_month_ordinal_year(todays_date)
 
     '''
-    Checks the cell value is a date in d/y/m format.
-    If yes, converts to format month + ordinal + year eg. '26th January 2001'
+    @ returns a string - either formatted date or original cell
+    Block 1 tests cell is DATETIME type
+    Block 2 tests is string with '21/2/2001' date format
+    Block 3 tests is string with '5/21/2001' date format
     '''
-    def convert_any_dates_to_month_ordinal_year(self, string):
+    def convert_any_dates_to_month_ordinal_year(self, cell):
         try:
-            date = datetime.strptime(string, "%d/%M/%Y")
-            date_string = "{} {} {}".format(str(date.strftime('%B')), str(date.day), str(date.year))
+            day_ordinal = return_ordinal(cell.day)
+            date_string = "{} {} {}".format(str(cell.strftime('%B')), day_ordinal, str(cell.year))
             return date_string
-
         except:
-            return string
+            pass
+
+        try:
+            date = datetime.strptime(cell, "%d/%m/%Y")
+            day_ordinal = return_ordinal(date.day)
+            date_string = "{} {} {}".format(str(date.strftime('%B')), day_ordinal, str(date.year))
+            return date_string
+        except:
+            pass
+
+        try:
+            date = datetime.strptime(cell, "%m/%d/%Y")
+            day_ordinal = return_ordinal(date.day)
+            date_string = "{} {} {}".format(str(date.strftime('%B')), day_ordinal, str(date.year))
+            return date_string
+        except:
+            pass
+
+        return str(cell)
 
