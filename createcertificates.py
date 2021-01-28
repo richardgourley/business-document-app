@@ -10,7 +10,7 @@ class CreateCertificates:
         self.check_files_exist()
         self.check_number_rows()
         # Methods above will advise user of error messages.
-        self.print_certificates()
+        self.create_certificates()
 
     def intro(self):
         print("To proceed we need to find:")
@@ -48,7 +48,7 @@ class CreateCertificates:
 
     '''
     Returns a list of row titles
-    Used in print_certificates() 
+    Used in create_certificates() 
     '''
     def get_row_titles(self):
         row_titles = []
@@ -57,7 +57,7 @@ class CreateCertificates:
 
         return row_titles
     
-    def print_certificates(self):
+    def create_certificates(self):
         print("CREATING CERTIFICATES")
 
         os.chdir('../wordfiles')
@@ -75,9 +75,13 @@ class CreateCertificates:
                 para_bold = para.runs[0].bold
 
                 for y in range(1, self.sheet.max_column + 1):
+                    # Get cell value - convert any dates or date strings to type '26th Jan 2020'
+                    cell_value = self.convert_any_dates_to_month_ordinal_year(str(self.sheet[get_column_letter(y) + str(i)].value))
+
+                    # If we find a row title eg . 'first name' in text, replace with corresponding cell value from this row
                     para.text = para.text.replace(
                         str(row_titles[y-1].lower()), 
-                        str(self.sheet[get_column_letter(y) + str(i)].value)
+                        cell_value
                     )
 
                 # ADD todays date
@@ -87,14 +91,14 @@ class CreateCertificates:
                 para.runs[0].font.size = para_font_size
                 para.runs[0].bold = para_bold
                     
-            # Save word doc for each excel row with name
-            certificate_doc.save(str(self.sheet["A" + str(i)].value) + str(self.today) + "_certificate.docx")
+            # Save word doc for each excel row with name and todays date
+            certificate_doc.save(str(self.sheet["A" + str(i)].value) + self.convert_any_dates_to_month_ordinal_year(datetime.now()) + "_certificate.docx")
 
         print("DONE!")
         print("You can find your certificates for each student created in the 'wordfiles' folder.")
 
     '''
-    DATE, TODAYS DATE METHODS
+    DATE METHODS
     '''
     def return_ordinal(self, day):
         ending_one = [1,21,31]
@@ -116,7 +120,7 @@ class CreateCertificates:
     '''
     def convert_any_dates_to_month_ordinal_year(self, cell):
         try:
-            day_ordinal = return_ordinal(cell.day)
+            day_ordinal = self.return_ordinal(cell.day)
             date_string = "{} {} {}".format(str(cell.strftime('%B')), day_ordinal, str(cell.year))
             return date_string
         except:
@@ -124,7 +128,7 @@ class CreateCertificates:
 
         try:
             date = datetime.strptime(cell, "%d/%m/%Y")
-            day_ordinal = return_ordinal(date.day)
+            day_ordinal = self.return_ordinal(date.day)
             date_string = "{} {} {}".format(str(date.strftime('%B')), day_ordinal, str(date.year))
             return date_string
         except:
@@ -132,7 +136,7 @@ class CreateCertificates:
 
         try:
             date = datetime.strptime(cell, "%m/%d/%Y")
-            day_ordinal = return_ordinal(date.day)
+            day_ordinal = self.return_ordinal(date.day)
             date_string = "{} {} {}".format(str(date.strftime('%B')), day_ordinal, str(date.year))
             return date_string
         except:
