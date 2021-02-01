@@ -1,19 +1,24 @@
 # Business Document App
-This is an written purely in Python which gives the user a menu, where he or she can:
-1. Search an excel with any term - returns any rows with a cell match to the search term.
-2. Count the number of instances a word, number of date appears in a column. eg. a column named department could return 2 for 'marketing', 3 for 'production' etc.
+This is an app
+ written purely in Python which gives the user a menu, where he or she can:
+1. Search an excel file with any term - returns any rows with a cell match to the search term.
+2. Count the number of instances a unique, word, date or number appears in a column.  For example, a search of a column called 'DEPARTMENT' could return something like:
+  DEPARTMENT, NUMBER OF INSTANCES
+  Marketing   2
+  Production  1
+  HR          2
 3. Create certificates - 
-   - Opens a certificate Word file with name, course duration and date.
-   - Opens an excel file, retrieves information for students in a row containing name and course duration
-   - Replaces 'name', 'duration' and 'date' with the excel info for each student.
-   - Saves a new Word document with the name of the student in the file name. 
+   - The user can add an excel file with details of employees or students who the user would like to create a certificate for.
+   - In this app, there is a Word document with the words first name, last name, start date, duration and today's date ready to be replaced.
+   - The app takes each line in the excel file and creates a new certificate as a a Word document by replacing the words with the information in the excel columns. 
 
-Files ending '.txt' are included in the 'wordfiles' and 'excelfiles' directory as examples of the excel and word files used when making the application.
+There are files included in the 'excelfiles' and 'wordfiles' directory as examples of the data this app would work with.
 
 It utilizes os, openpyxl and docx.
 
 ## SKILLS COVERED
-For Python students, this application is simple enough to follow but covers a number of key data structures and could be a good reference for a beginner to Python to see some scenarios of using data structures.  It also imports and uses Python libraries.
+For Python students, this application is simple enough to follow but covers a number of key data structure examples.
+It also imports and uses Python libraries.
 Some of the topics covered are:
 
 - openpyxl - for working with excel spreadsheets using Python
