@@ -55,16 +55,19 @@ class CountColumnInstances:
         print('===============')
 
     def choose_a_column(self):
-        column_letter = ""
-        while column_letter == "":
+        valid_column_letter = False
+        chosen_column_letter = ""
+
+        while valid_column_letter == False:
             print("Enter a column letter from above (A, B, C etc.)")
-            column_letter = input()
+            chosen_column_letter = input()
 
-            if not column_letter in self.sheet_column_letters:
-                # If input isnt in sheet_column_letters, repeat the loop
-                column_letter = ""
+            if not chosen_column_letter in self.sheet_column_letters:
+                valid_column_letter = False
+            else:
+                valid_column_letter = True
 
-        self.column_letter = column_letter
+        self.column_letter = chosen_column_letter
         print("=============")
 
     def print_results(self):
