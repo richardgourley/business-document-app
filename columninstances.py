@@ -38,18 +38,12 @@ class CountColumnInstances:
                 excel_file = None
                 print("Sorry, the file name you entered doesn't match an available file.")
         
-        self.assign_excel_file_class_variable(excel_file)
-        self.assign_sheet_class_variable(excel_file)
-        self.assign_sheet_column_letters_class_variable()
+        self.assign_class_variables(excel_file)
         print("===============")
 
-    def assign_excel_file_class_variable(self, excel_file):
+    def assign_class_variables(self, excel_file):
         self.excel_file = excel_file
-
-    def assign_sheet_class_variable(self, excel_file):
         self.sheet = excel_file.active
-
-    def assign_sheet_column_letters_class_variable(self):
         self.sheet_column_letters = list()
         for i in range(1, self.sheet.max_column + 1):
             self.sheet_column_letters.append(get_column_letter(i))
