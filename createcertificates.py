@@ -41,6 +41,22 @@ class CreateCertificates:
         # If 'studentcertificates.xlsx' opens ok, assign self.sheet to be used in print_certificates
         self.sheet = student_certificates_excel.active
 
+    def try_open_and_assign_excel_spreadsheet(self):
+        os.chdir("../excelfiles")
+        try:
+            self.excel_spreadsheet = openpyxl.load_workbook('studentcertificates.xlsx')
+        except:
+            print("We found but couldn't open the file 'studentcertificates.xlsx'")
+            quit()
+
+    def try_open_and_assign_word_doc(self):
+        os.chdir('../wordfiles')
+        try:
+            self.certificate_doc = docx.Document('certificate.docx')
+        except:
+            print("We found but couldn't open the file 'certificate.docx'")
+            quit()
+
     def check_number_rows(self):
         if self.sheet.max_row < 2:
             print("Sorry, there aren't any data rows in the database")
