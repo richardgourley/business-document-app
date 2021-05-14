@@ -6,10 +6,10 @@ class CountColumnInstances:
     def __init__(self):
         self.check_excel_files_exist()
         self.display_available_files()
-        self.choose_excel_file()
-        self.display_columns()
-        self.choose_a_column()
-        self.print_results()
+        self.choose_excel_file_and_assign_class_variables()
+        #self.display_columns()
+        #self.choose_a_column()
+        #self.print_results()
 
     def check_excel_files_exist(self):
         os.chdir('excelfiles')
@@ -27,10 +27,9 @@ class CountColumnInstances:
             print(file)
         print('===============')
 
-    def choose_excel_file(self):
+    def choose_excel_file_and_assign_class_variables(self):
         excel_file = None
         while excel_file is None:
-            # User chooses file
             print("Enter the name of a file to search. (Must match a file name shown above)")
             excel_file = input()
             try:
@@ -39,35 +38,51 @@ class CountColumnInstances:
                 excel_file = None
                 print("Sorry, the file name you entered doesn't match an available file.")
         
-        self.excel_file = excel_file
-        self.sheet = self.excel_file.active
+        self.assign_excel_file_class_variable(excel_file)
+        self.assign_sheet_class_variable(excel_file)
+        self.assign_sheet_column_letters_class_variable()
         print("===============")
 
+    def assign_excel_file_class_variable(self, excel_file):
+        self.excel_file = excel_file
+
+    def assign_sheet_class_variable(self, excel_file):
+        self.sheet = excel_file.active
+
+    def assign_sheet_column_letters_class_variable(self):
+        self.sheet_column_letters = list()
+        for i in range(1, self.sheet.max_column + 1):
+            self.sheet_column_letters.append(get_column_letter(i))
+
     def display_columns(self):
-        print('Here are the available column names.')
+        print('Here are the available columns.')
         print('===============')
         # Will use this list in CHOOSE_A_COLUMN method
         self.sheet_column_letters = list()
 
         for i in range(1, self.sheet.max_column + 1):
-            print(get_column_letter(i), self.sheet[get_column_letter(i) + "1"].value)
+            print(i, "=", get_column_letter(i), self.sheet[get_column_letter(i) + "1"].value)
             self.sheet_column_letters.append(get_column_letter(i))
         print('===============')
 
     def choose_a_column(self):
-        valid_column_letter = False
-        chosen_column_letter = ""
+        chosen_column_number = None
 
-        while valid_column_letter == False:
-            print("Enter a column letter from above (A, B, C etc.)")
-            chosen_column_letter = input()
+        while chosen_column_number == None:
+            print("Enter a column number from above")
+            chosen_column_number = input()
 
-            if not chosen_column_letter in self.sheet_column_letters:
-                valid_column_letter = False
-            else:
-                valid_column_letter = True
+            for i in range(1, self.sheet.max_column + 1):
+                if str(i) == chosen_column_number:
+                    self.chosen_column_number = chosen_column_number
+                    break
+            
+            try:
+                print("Chosen column number is: ", str(self.chosen_column_number))
+            except:
+                print("Sorry, number not valid")
+                chosen_column_number = None
 
-        self.column_letter = chosen_column_letter
         print("=============")
 
     def print_results(self):
@@ -99,3 +114,9 @@ class CountColumnInstances:
             for item in result:
                 result_row += str(item) + " "
             print(result_row)
+
+
+
+
+
+
