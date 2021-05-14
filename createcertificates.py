@@ -57,9 +57,9 @@ class CreateCertificates:
             print("We found but couldn't open the file 'certificate.docx'")
             quit()
 
-    def check_number_rows(self):
+    def check_sheet_has_data(self):
         if self.sheet.max_row < 2:
-            print("Sorry, there aren't any data rows in the database")
+            print("Sorry, there aren't any data rows in the 'studentcertificates.xlsx' file. Please check")
             quit()
 
     '''
