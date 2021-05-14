@@ -59,25 +59,17 @@ class CountColumnInstances:
             self.sheet_column_letters.append(get_column_letter(i))
         print('===============')
 
-    def choose_a_column(self):
-        chosen_column_number = None
+    def choose_and_assign_column_letter(self):
+        chosen_column_letter = None
 
-        while chosen_column_number == None:
-            print("Enter a column number from above")
-            chosen_column_number = input()
+        while chosen_column_letter == None:
+            print("Enter a column letter from above - A,B,C,D etc.")
+            chosen_column_letter = input()
 
-            for i in range(1, self.sheet.max_column + 1):
-                if str(i) == chosen_column_number:
-                    self.chosen_column_number = chosen_column_number
-                    break
-            
-            try:
-                print("Chosen column number is: ", str(self.chosen_column_number))
-            except:
-                print("Sorry, number not valid")
-                chosen_column_number = None
-
-        print("=============")
+            if chosen_column_letter in self.sheet_column_letters:
+                self.chosen_column_letter = chosen_column_letter
+            else:
+                chosen_column_letter = None
 
     def print_results(self):
         results = {}
