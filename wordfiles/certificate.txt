@@ -10,6 +10,6 @@ Successfully completed a duration week Spanish course at a Language School
 
 Start Date: start date
 
-Today’s Date: date
+Today’s Date: today
 
 Signed: Director
