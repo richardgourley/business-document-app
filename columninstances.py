@@ -7,9 +7,9 @@ class CountColumnInstances:
         self.check_excel_files_exist()
         self.display_available_files()
         self.choose_excel_file_and_assign_class_variables()
-        #self.display_columns()
-        #self.choose_a_column()
-        #self.print_results()
+        self.display_column_letters_and_titles()
+        self.choose_and_assign_column_letter()
+        self.print_results()
 
     def check_excel_files_exist(self):
         os.chdir('excelfiles')
@@ -48,15 +48,12 @@ class CountColumnInstances:
         for i in range(1, self.sheet.max_column + 1):
             self.sheet_column_letters.append(get_column_letter(i))
 
-    def display_columns(self):
+    def display_column_letters_and_titles(self):
         print('Here are the available columns.')
         print('===============')
-        # Will use this list in CHOOSE_A_COLUMN method
-        self.sheet_column_letters = list()
-
+        
         for i in range(1, self.sheet.max_column + 1):
-            print(i, "=", get_column_letter(i), self.sheet[get_column_letter(i) + "1"].value)
-            self.sheet_column_letters.append(get_column_letter(i))
+            print(get_column_letter(i), self.sheet[get_column_letter(i) + "1"].value)
         print('===============')
 
     def choose_and_assign_column_letter(self):
@@ -71,38 +68,37 @@ class CountColumnInstances:
             else:
                 chosen_column_letter = None
 
-    def print_results(self):
-        results = {}
-        count = (self.sheet.max_row -1)
+        print("=============")
 
+    def print_results(self):
+        self.count_rows_print_row_message()
+        results = self.add_row_value_count_to_dict()
+        sorted_results = self.sort_results_by_row_value_count(results)
+        self.print_sorted_results(sorted_results)
+
+    def count_rows_print_row_message(self):
+        count = (self.sheet.max_row -1)
         print("From " + str(count) + " rows, we found:")
 
+    def add_row_value_count_to_dict(self):
+        results = {}
+
         for i in range(2, self.sheet.max_row + 1):
-            # get value
-            value = self.sheet[self.column_letter + str(i)].value
-            # see if value is a key in results dictionary
-            # if not, create a new key set to 1, if yes, add 1 to the value of the key
+            value = self.sheet[self.chosen_column_letter + str(i)].value
             if not value in results:
                 results[value] = 1
             else:
                 results[value] += 1
 
-        # 'results' sorted by highest number of instances first
-        # 'results_sorted' returns list of tuples
-        results_sorted = sorted( [ (v,k) for k,v in results.items() ], reverse=True )
+        return results
 
-        # print no. of instances and column name
-        print("NUM INSTANCES,", self.sheet[self.column_letter + "1"].value)
-        # loop the sorted results 
-        for result in results_sorted:
-            # create a string to display each item in the result
+    def sort_results_by_row_value_count(self, results):
+        return sorted( [ (v,k) for k,v in results.items() ], reverse=True )
+
+    def print_sorted_results(self, sorted_results):
+        print("NUM INSTANCES,", self.sheet[self.chosen_column_letter + "1"].value)
+        for result in sorted_results:
             result_row = ""
             for item in result:
                 result_row += str(item) + " "
             print(result_row)
-
-
-
-
-
-
