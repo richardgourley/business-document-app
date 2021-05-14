@@ -72,6 +72,26 @@ class CreateCertificates:
             row_titles.append(self.sheet[get_column_letter(y) + "1"].value)
 
         return row_titles
+
+    def loop_paragraphs_replace_text(self, row_number, new_certificate):
+        paragraphs = list(self.paragraphs)
+
+        for para in paragraphs:
+            for column in self.columns:
+                if column['column_name'] in para['text']:
+                    para['text'] = para['text'].replace(
+                        column['column_name'],
+                        str(self.sheet[column['column'] + str(row_number)].value)
+                        
+                    )
+
+                if 'today' in para['text']:
+                    para['text'] = para['text'].replace(
+                        'today',
+                        str(datetime.today().strftime('%d/%m/%Y'))
+                    )
+        
+        self.add_paragraphs_to_document(paragraphs, new_certificate)
     
     def create_certificates(self):
         print("CREATING CERTIFICATES")
