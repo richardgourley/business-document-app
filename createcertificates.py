@@ -1,6 +1,7 @@
 import os
 import openpyxl
 from openpyxl.utils import get_column_letter
+from openpyxl.utils.cell import get_column_letter
 import docx
 from datetime import datetime
 
@@ -8,38 +9,42 @@ class CreateCertificates:
     def __init__(self):
         self.intro()
         self.check_files_exist()
-        self.check_number_rows()
-        # Methods above will advise user of error messages.
+        self.try_open_and_assign_excel_spreadsheet()
+        self.try_open_and_assign_word_doc()
+        self.assign_sheet_class_variable()
+        self.check_sheet_has_data()
+        self.assign_columns_as_class_variable()
+        self.assign_doc_paragraphs_as_class_variable()
         self.create_certificates()
+        self.print_completed_message()
 
     def intro(self):
         print("To proceed we need to find:")
         print("The 'studentcertificates.xlsx' file in the folder 'excelfiles'")
         print("...AND the 'cerfificate.docx' file in the 'wordfiles' folder.")
         print("===Checking folders===")
-        print("NOTE: The words you want to replace in the certificate file must match the title columns in the spreadsheet.")
 
     def check_files_exist(self):
+        self.check_student_certificate_xlsx_file_exists()
+        self.check_certificate_docx_file_exists()
+
+    def check_student_certificate_xlsx_file_exists(self):
         os.chdir('excelfiles')
         excel_files = os.listdir()
+
+        if not "studentcertificates.xlsx" in excel_files:
+            print("Sorry, we couldn't find the file 'studentcertificates.xlsx' in the excel folder")
+            print("Please check and try again")
+            quit()
+
+    def check_certificate_docx_file_exists(self):
         os.chdir('../wordfiles')
         word_files = os.listdir()
 
-        if (not "studentcertificates.xlsx" in excel_files) or (not "certificate.docx" in word_files):
-            print("Sorry, we couldn't find the files above.")
-            print("Please check the files exist in the correct folders and try again.")
+        if not "certificate.docx" in word_files:
+            print("Sorry, we couldn't find the file 'certificate.docx' in the wordfiles folder")
+            print("Please check and try again")
             quit()
-        else:
-            try:
-                certificate_doc = docx.Document('certificate.docx')
-                os.chdir("../excelfiles")
-                student_certificates_excel = openpyxl.load_workbook('studentcertificates.xlsx')
-            except:
-                print("We found the files but there was a problem opening the files. Please check.")
-                quit()
-        
-        # If 'studentcertificates.xlsx' opens ok, assign self.sheet to be used in print_certificates
-        self.sheet = student_certificates_excel.active
 
     def try_open_and_assign_excel_spreadsheet(self):
         os.chdir("../excelfiles")
@@ -57,127 +62,78 @@ class CreateCertificates:
             print("We found but couldn't open the file 'certificate.docx'")
             quit()
 
+    def assign_sheet_class_variable(self):
+        self.sheet = self.excel_spreadsheet.active
+
     def check_sheet_has_data(self):
         if self.sheet.max_row < 2:
             print("Sorry, there aren't any data rows in the 'studentcertificates.xlsx' file. Please check")
             quit()
 
-    '''
-    Returns a list of row titles
-    Used in create_certificates() 
-    '''
-    def get_row_titles(self):
-        row_titles = []
+    def assign_columns_as_class_variable(self):
+        columns = list()
         for y in range(1, self.sheet.max_column + 1):
-            row_titles.append(self.sheet[get_column_letter(y) + "1"].value)
+            column_dict = dict()
+            column_dict['column'] = get_column_letter(y)
+            column_dict['column_name'] = self.sheet[get_column_letter(y) + "1"].value.lower()
+            columns.append(column_dict)
 
-        return row_titles
+        self.columns = columns
 
-    def loop_paragraphs_replace_text(self, row_number, new_certificate):
-        paragraphs = list(self.paragraphs)
+    def assign_doc_paragraphs_as_class_variable(self):
+        paragraphs = list()
+        for para in self.certificate_doc.paragraphs:
+            para_dict = dict()
+            para_dict['text'] = para.text
+            para_dict['font_size'] = para.runs[0].font.size
+            para_dict['bold'] = para.runs[0].bold
+            paragraphs.append(para_dict)
 
-        for para in paragraphs:
-            for column in self.columns:
-                if column['column_name'] in para['text']:
-                    para['text'] = para['text'].replace(
-                        column['column_name'],
-                        str(self.sheet[column['column'] + str(row_number)].value)
-                        
-                    )
+        self.paragraphs = paragraphs
 
-                if 'today' in para['text']:
-                    para['text'] = para['text'].replace(
-                        'today',
-                        str(datetime.today().strftime('%d/%m/%Y'))
-                    )
-        
-        self.add_paragraphs_to_document(paragraphs, new_certificate)
-    
     def create_certificates(self):
         print("CREATING CERTIFICATES")
+        for row_number in range(2, self.sheet.max_row + 1):
+            new_certificate = docx.Document()
+            self.loop_paragraphs_add_to_new_certificate(row_number, new_certificate)
 
-        os.chdir('../wordfiles')
-        row_titles = self.get_row_titles()
+    def loop_paragraphs_add_to_new_certificate(self, row_number, new_certificate):
+        for para in self.paragraphs:
+            paragraph_text = self.replace_para_text_with_cell_data(para['text'], row_number)
+            paragraph_font = para['font_size']
+            paragrpah_bold = para['bold']
 
-        #### START ROW LOOP AT ROW 2 HENCE RANGE(2...) ####
-        for i in range(2, self.sheet.max_row + 1):
-            certificate_doc = docx.Document('certificate.docx')
+            new_para = new_certificate.add_paragraph()
+            new_para.text = paragraph_text
+            new_para.runs[0].font.size = paragraph_font
+            new_para.runs[0].bold = paragrpah_bold
+        
+        self.save_new_certificate(row_number, new_certificate)
 
-            for para in certificate_doc.paragraphs:
-                if para.text == "":
-                    continue
+    def replace_para_text_with_cell_data(self, para_text, row_number):
+        for column in self.columns:
+            if column['column_name'] in para_text:
+                para_text = para_text.replace(
+                    column['column_name'],
+                    str(self.sheet[column['column'] + str(row_number)].value) 
+                )
+                        
+            if 'today' in para_text:
+                para_text = para_text.replace(
+                    'today',
+                    str(datetime.today().strftime('%d/%m/%Y'))
+            )
 
-                # Get current font settings for paragraph
-                para_font_size = para.runs[0].font.size
-                para_bold = para.runs[0].bold
+        return para_text
 
-                for y in range(1, self.sheet.max_column + 1):
-                    # Get cell value - convert any dates or date strings to type '26th Jan 2020'
-                    cell_value = self.convert_any_dates_to_month_ordinal_year(str(self.sheet[get_column_letter(y) + str(i)].value))
+    def save_new_certificate(self, row_number, new_certificate):
+        last_name = self.sheet[self.columns[1]['column'] + str(row_number)].value
+        todays_date = str(datetime.today().strftime('%d-%m-%Y'))
+        new_certificate.save(todays_date + last_name + '.docx')
 
-                    # If we find a row title eg . 'first name' in text, replace with corresponding cell value from this row
-                    para.text = para.text.replace(
-                        str(row_titles[y-1].lower()), 
-                        cell_value
-                    )
-
-                # ADD todays date
-                para.text = para.text.replace("date", str(self.convert_any_dates_to_month_ordinal_year(datetime.now())))
-
-                # Re-apply existing font size and bold settting
-                para.runs[0].font.size = para_font_size
-                para.runs[0].bold = para_bold
-                    
-            # Save word doc for each excel row with name and todays date
-            certificate_doc.save(str(self.sheet["A" + str(i)].value) + self.convert_any_dates_to_month_ordinal_year(datetime.now()) + "_certificate.docx")
-
+    def print_completed_message(self):
         print("DONE!")
         print("You can find your certificates for each student created in the 'wordfiles' folder.")
+        print("***If your certificates don't look correct, check that the words in the certificate file match the title columns in the speadsheet.***")
 
-    '''
-    DATE METHODS
-    '''
-    def return_ordinal(self, day):
-        ending_one = [1,21,31]
-        ending_two = [2,22]
-        ending_three = [3,23]
-        if int(day) in ending_one:
-            return str(day) + "st"
-        if int(day) in ending_two:
-            return str(day) + "nd"
-        if int(day) in ending_three:
-            return str(day) + "rd"
-        return str(day) + "th"
-
-    '''
-    @ returns a string - either formatted date or original cell
-    Block 1 tests cell is DATETIME type
-    Block 2 tests is string with '21/2/2001' date format
-    Block 3 tests is string with '5/21/2001' date format
-    '''
-    def convert_any_dates_to_month_ordinal_year(self, cell):
-        try:
-            day_ordinal = self.return_ordinal(cell.day)
-            date_string = "{} {} {}".format(str(cell.strftime('%B')), day_ordinal, str(cell.year))
-            return date_string
-        except:
-            pass
-
-        try:
-            date = datetime.strptime(cell, "%d/%m/%Y")
-            day_ordinal = self.return_ordinal(date.day)
-            date_string = "{} {} {}".format(str(date.strftime('%B')), day_ordinal, str(date.year))
-            return date_string
-        except:
-            pass
-
-        try:
-            date = datetime.strptime(cell, "%m/%d/%Y")
-            day_ordinal = self.return_ordinal(date.day)
-            date_string = "{} {} {}".format(str(date.strftime('%B')), day_ordinal, str(date.year))
-            return date_string
-        except:
-            pass
-
-        return str(cell)
 
