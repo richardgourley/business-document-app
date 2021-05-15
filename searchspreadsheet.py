@@ -1,11 +1,13 @@
 import os
 import openpyxl
+from openpyxl.utils import get_column_letter
 
 class SearchSpreadsheet:
     def __init__(self):
         self.check_excel_files_exist()
         self.display_available_files()
         self.choose_excel_file()
+        self.get_column_names()
         self.choose_search_term()
         self.print_search_results()
 
@@ -28,7 +30,6 @@ class SearchSpreadsheet:
     def choose_excel_file(self):
         excel_file = None
         while excel_file is None:
-            # User chooses file
             print("Enter the name of a file to search. (Must match a file name shown above)")
             excel_file = input()
             try:
@@ -42,14 +43,12 @@ class SearchSpreadsheet:
         print("===============")
 
     def get_column_names(self):
-        # get column names as a string for printing
         self.column_names = ""
         for i in range(1, self.sheet.max_column + 1):
             self.column_names += str(self.sheet[get_column_letter(i) + "1"].value) + " -- "
 
     def choose_search_term(self):
         search_term = ""
-        # If 'search_term' is blank, we repeat the loop
         while search_term == "":
             print("Enter a search term. You can enter words or numbers. (Can't be blank)")
             search_term = input()
@@ -57,23 +56,18 @@ class SearchSpreadsheet:
 
         print("=============")
 
-    # Returns a data type of results and result information
     def print_search_results(self):
-        # count will display how many results we find
-        count = 0
-        # we assigned 'self.search_term' in 'choose_search_term()'
-        # use 'self.search_term' lower case - easier to compare with 'cell.value' lowercase
+        number_of_results = 0
+
         search_term_lower = self.search_term.lower()
 
-        # Print out column names before results
         print(self.column_names)
 
         for row in list(self.sheet.rows):
-            # loop through each cell, if search_term matches cell value - ..
-            # .. convert tuple to string + print and stop comparing (break)
             for cell in row:
                 if search_term_lower in str(cell.value).lower():
-                    count += 1
+                    number_of_results += 1
                     print(", ".join(map(lambda x: str(x.value), row)))
                     break
-        print("TOTAL RESULTS = ", count)
+        print("TOTAL RESULTS = ", number_of_results)
+        
