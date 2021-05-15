@@ -63,7 +63,7 @@ class SearchSpreadsheet:
 
         print(self.column_names)
 
-        for row in list(self.sheet.rows):
+        for row in tuple(self.sheet.rows):
             for cell in row:
                 if search_term_lower in str(cell.value).lower():
                     number_of_results += 1
